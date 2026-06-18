@@ -1,0 +1,61 @@
+Bro 😄 in VS Code:
+
+Zoom In
+Ctrl + +
+
+or
+
+Ctrl + Mouse Wheel Up
+
+Makes:
+
+Font Bigger
+Zoom Out
+Ctrl + -
+
+or
+
+Ctrl + Mouse Wheel Down
+
+Makes:
+
+Font Smaller
+Reset Zoom
+Ctrl + 0
+
+(zero, not O)
+
+Resets back to default size.
+
+Example:
+
+Ctrl + +
+Ctrl + +
+Ctrl + +
+
+Font becomes huge 🔍
+
+Then:
+
+Ctrl + 0
+
+Back to normal ✅
+
+Useful VS Code shortcuts:
+
+Ctrl + +    Zoom In
+Ctrl + -    Zoom Out
+Ctrl + 0    Reset Zoom
+
+Ctrl + S    Save
+Ctrl + ,    Settings
+Ctrl + Shift + P    Command Palette
+Shift + Alt + F     Format Document
+Ctrl + /    Comment/Uncomment Line
+Ctrl + `    Open Terminal
+
+So yes bro:
+
+Ctrl + 0
+
+means reset zoom level to default. ✅

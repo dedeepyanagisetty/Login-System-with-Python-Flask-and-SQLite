@@ -1,0 +1,76 @@
+Get-Content .\run.py
+
+Get-Content .\app\__init__.py
+
+Get-Content .\app\extensions.py
+
+Get-Content .\app\config.py
+
+or
+
+type .\run.py
+
+type .\app\__init__.py
+
+type .\app\extensions.py
+
+type .\app\config.py
+
+
+
+==============================
+
+
+Now run these commands in order:
+
+python run.py
+
+If application starts successfully, stop it with:
+
+Ctrl + C
+
+Then:
+
+$env:FLASK_APP="run.py"
+
+Verify Flask can load the app:
+
+flask routes
+
+If routes are displayed successfully:
+
+flask db init
+
+Then:
+
+flask db migrate -m "Initial accounts table"
+
+Then:
+
+flask db upgrade
+
+Finally start application:
+
+python run.py
+
+Open:
+
+http://127.0.0.1:5000
+
+or
+
+http://localhost:5000
+
+Register a user:
+
+Register
+↓
+Create account
+↓
+Login
+↓
+Home
+↓
+Profile
+
+If any command fails, paste the complete error output.

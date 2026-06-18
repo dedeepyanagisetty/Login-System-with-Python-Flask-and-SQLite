@@ -1,0 +1,1116 @@
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> flask db init
+Error: Failed to find Flask application or factory in module 'app'. Use 'app:name' to specify one.
+
+Usage: flask [OPTIONS] COMMAND [ARGS]...
+Try 'flask --help' for help.
+
+Error: No such command 'db'.
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> 
+
+So what is this error explain and fix it
+
+Found it bro ✅
+
+This is the problem:
+
+Get-Content .\app\__init__.py
+
+Cannot find path
+app\__init__.py
+
+You don't have:
+
+app/
+└── __init__.py
+
+Without __init__.py Python does not recognize app properly as a package for your Factory Pattern.
+
+Also your run.py is incomplete:
+
+Current:
+
+from app import create_app
+
+app = create_app()
+
+if __name__ == "__main__":
+
+It should be:
+
+from app import create_app
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+Now create:
+
+app/__init__.py
+
+with:
+
+from flask import Flask
+
+from app.config import Config
+from app.extensions import db, migrate
+
+def create_app():
+app = Flask(name)
+
+app.config.from_object(Config)
+
+db.init_app(app)
+migrate.init_app(app, db)
+
+from app.routes.auth_routes import auth_bp
+
+app.register_blueprint(auth_bp)
+
+return app
+
+Then verify:
+
+dir app
+
+You should see:
+
+__init__.py
+config.py
+extensions.py
+models
+routes
+services
+
+Then run:
+
+python run.py
+
+If that works:
+
+$env:FLASK_APP="run.py"
+flask routes
+
+Then:
+
+flask db init
+flask db migrate -m "Initial accounts table"
+flask db upgrade
+
+Right now the blocker is simply:
+
+app/__init__.py
+
+missing, and run.py incomplete. 🚀
+
+Bro 😄
+
+The problem is indentation.
+
+Your file currently looks like:
+
+def create_app():
+    app = Flask(__name__)
+
+
+app.config.from_object(Config)
+
+db.init_app(app)
+migrate.init_app(app, db)
+
+from app.routes.auth_routes import auth_bp
+
+app.register_blueprint(auth_bp)
+
+return app
+
+Everything after:
+
+app = Flask(__name__)
+
+is outside the function.
+
+Therefore Python says:
+
+SyntaxError: 'return' outside function
+
+Because:
+
+return app
+
+must be inside create_app().
+
+Use this exact file:
+
+from flask import Flask
+
+from app.config import Config
+from app.extensions import db, migrate
+
+
+def create_app():
+    app = Flask(__name__)
+
+    app.config.from_object(Config)
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    from app.routes.auth_routes import auth_bp
+
+    app.register_blueprint(auth_bp)
+
+    return app
+
+Notice:
+
+def create_app():
+    app = Flask(__name__)
+
+    app.config.from_object(Config)
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    from app.routes.auth_routes import auth_bp
+
+    app.register_blueprint(auth_bp)
+
+    return app
+
+Everything is indented by 4 spaces under create_app().
+
+Also remove this:
+
+from flask import Flask, app
+
+Use:
+
+from flask import Flask
+
+only.
+
+Then save and run:
+
+python run.py
+
+The return outside function error will be gone. 🚀
+========================================================================================
+app\__init__.py  Erros gone read above Fixing Steps Letr Carefully and revise also ✅✅
+========================================================================================
+
+
+Bro, the problem is this line:
+
+auth_bp = Blueprint("auth", **name**)
+
+**name** is not Python syntax. It looks like markdown formatting got copied into your code.
+
+Replace it with:
+
+auth_bp = Blueprint("auth", __name__)
+
+Also, all those lines surrounded by:
+
+
+are markdown code fences and must NOT be inside your `.py` file.
+
+Your `auth_routes.py` is heavily broken by copied markdown formatting.
+
+The next thing to do is:
+
+1. Delete the current contents of `app/routes/auth_routes.py`.
+2. Paste a clean Python version (no ``` markers, no `**name**`, proper indentation).
+3. Save.
+4. Run:
+
+```bash
+python run.py
+
+The current error is specifically caused by:
+
+Blueprint("auth", **name**)
+
+and should be:
+
+Blueprint("auth", __name__)
+
+After fixing that, if another error appears, paste the new traceback.
+
+Bro, the error is exactly what Python says:
+
+def login():
+msg = ""
+
+After a function definition, Python expects indentation.
+
+It must be:
+
+def login():
+    msg = ""
+
+Also your file still contains these markdown fences:
+
+
+inside the Python file, which makes it invalid Python.
+
+Your entire `auth_routes.py` is not properly indented.
+
+The quickest fix:
+
+1. Delete everything currently inside `app/routes/auth_routes.py`.
+2. Paste a clean version of the file (with proper indentation and no ``` markers).
+3. Save.
+4. Run:
+
+```bash
+python run.py
+
+The current error is not Flask, SQLAlchemy, or Migrate. It's simply invalid Python indentation in auth_routes.py.
+
+Also, to inspect exactly what is in the file, run:
+
+Get-Content .\app\routes\auth_routes.py
+
+and compare it with the properly indented version. The line immediately after every:
+
+def something():
+
+must start with 4 spaces.
+
+
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> python run.py
+Traceback (most recent call last):
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\run.py", line 3, in <module>
+    app = create_app()
+          ^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\app\__init__.py", line 15, in create_app    from app.routes.auth_routes import auth_bp
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\app\routes\auth_routes.py", line 35
+    return redirect(url_for("auth.home"))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: 'return' outside function
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> 
+
+
+Yes bro, a Tab in VS Code is usually converted to 4 spaces for Python, which is fine.
+
+But your problem is here:
+
+def login():
+    msg = ""
+
+if request.method == "POST":
+
+if request.method == "POST": is outside the function.
+
+It must be:
+
+def login():
+    msg = ""
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+Everything that belongs to login() must be indented under def login():.
+
+Right now Python sees:
+
+def login():
+    msg = ""
+
+# login() ended here
+
+if request.method == "POST":
+
+Then later:
+
+return redirect(url_for("auth.home"))
+
+is not inside any function, so Python throws:
+
+SyntaxError: 'return' outside function
+Quick rule
+def function_name():
+    line1
+    line2
+
+    if condition:
+        line3
+        line4
+
+    return something
+
+Every line belonging to the function must start with 4 spaces.
+
+Nested blocks get 8 spaces.
+
+Example:
+
+def login():
+    msg = ""
+
+    if request.method == "POST":
+        username = request.form.get("username")
+
+        if username:
+            print(username)
+
+    return render_template("index.html")
+
+Notice:
+
+def login():                 0 spaces
+msg = ""                     4 spaces
+if request.method            4 spaces
+username =                   8 spaces
+if username                  8 spaces
+print                         12 spaces
+return                       4 spaces
+
+Your current login() and register() functions need all their code moved inside the function body with proper indentation. That's why you're getting "return outside function".
+
+Bro, the error is now in register(), not login().
+
+Look at this part:
+
+@auth_bp.route("/register", methods=["GET", "POST"])
+def register():
+    msg = ""
+
+
+if request.method == "POST":
+
+The function ends after:
+
+msg = ""
+
+Because if request.method == "POST": is back at column 0.
+
+So Python sees:
+
+return render_template(
+
+outside any function and throws:
+
+SyntaxError: 'return' outside function
+
+Everything below must be inside register():
+
+@auth_bp.route("/register", methods=["GET", "POST"])
+def register():
+    msg = ""
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        email = request.form.get("email")
+
+        success, msg = AuthService.register_user(
+            username=username,
+            password=password,
+            email=email,
+            secret_key=current_app.config["SECRET_KEY"]
+        )
+
+    return render_template(
+        "register.html",
+        msg=msg
+    )
+
+Notice:
+
+def register():      0 spaces
+msg = ""             4 spaces
+if request...        4 spaces
+username =           8 spaces
+success,msg =        8 spaces
+return render...     4 spaces
+
+Run this to catch indentation problems immediately:
+
+python -m py_compile app\routes\auth_routes.py
+
+Fix register() indentation first. Then run:
+
+python run.py
+
+The current traceback is coming from register() being incorrectly indented.
+
+from flask import (
+Blueprint,
+render_template,
+request,
+redirect,
+url_for,
+session,
+current_app
+)
+
+from app.models.account import Account
+from app.services.auth_service import AuthService
+
+auth_bp = Blueprint("auth", __name__)
+
+@auth_bp.route("/", methods=["GET", "POST"])
+def login():
+    msg = ""  # So four spaces needed and tab pressed emans its four spaces defaLT TAKEN IN PYTHON
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        success, account, msg = AuthService.authenticate_user(
+            username=username,
+            password=password,
+            secret_key=current_app.config["SECRET_KEY"]
+        )
+
+        if success:
+            session["loggedin"] = True
+            session["id"] = account.id
+            session["username"] = account.username
+
+        return redirect(url_for("auth.home"))
+
+        return render_template(
+            "index.html",
+            msg=msg
+        )
+
+
+@auth_bp.route("/register", methods=["GET", "POST"])
+def register():
+    msg = ""
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        email = request.form.get("email")
+
+        success, msg = AuthService.register_user(
+            username=username,
+            password=password,
+            email=email,
+            secret_key=current_app.config["SECRET_KEY"]
+        )
+
+    return render_template(
+        "register.html",
+        msg=msg
+    )
+
+@auth_bp.route("/home")
+def home():
+    if "loggedin" not in session:
+        return redirect(url_for("auth.login"))
+
+    return render_template(
+        "home.html",
+        username=session["username"]
+    )
+
+@auth_bp.route("/profile")
+def profile():
+    if "loggedin" not in session:
+        return redirect(url_for("auth.login"))
+
+    account = Account.query.get(session["id"])
+
+    return render_template(
+        "profile.html",
+        account=account
+    )
+
+
+@auth_bp.route("/logout")
+def logout():
+    session.pop("loggedin", None)
+    session.pop("id", None)
+    session.pop("username", None)
+    
+    return redirect(url_for("auth.login"))
+
+nOW CLEARED ROUTES FILE nOW
+===========================================================================================
+app\auth_routes.py  Erros gone read above Fixing Steps Letr Carefully and revise also ✅✅
+===========================================================================================
+
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> python run.py
+Traceback (most recent call last):
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\run.py", line 3, in <module>
+    app = create_app()
+          ^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\app\__init__.py", line 15, in create_app    from app.routes.auth_routes import auth_bp
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\app\routes\auth_routes.py", line 12, in<module>
+    from app.services.auth_service import AuthService
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\app\services\auth_service.py", line 12
+    @staticmethod
+    ^
+IndentationError: expected an indented block after class definition on line 9
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> 
+
+Bro 😄 same issue again: indentation.
+
+You have:
+
+class AuthService:
+
+
+@staticmethod
+def hash_password(password, secret_key):
+
+Python expects everything inside the class to be indented.
+
+It should be:
+
+class AuthService:
+
+    @staticmethod
+    def hash_password(password, secret_key):
+Rule
+class MyClass:
+    # 4 spaces
+
+    @staticmethod
+    def method():
+        # 8 spaces
+        pass
+
+Your current structure is:
+
+class AuthService:   # 0 spaces
+
+@staticmethod        # 0 spaces ❌
+def hash_password(): # 0 spaces ❌
+
+It must be:
+
+class AuthService:   # 0 spaces
+
+    @staticmethod    # 4 spaces ✅
+    def hash_password(): # 4 spaces ✅
+
+Because all methods belong to the class.
+
+VS Code Tip
+
+Turn on:
+
+View
+↓
+Command Palette
+↓
+Indentation: Convert Indentation to Spaces
+
+Then:
+
+Shift + Alt + F
+
+to auto-format.
+
+Next Step
+
+Fix auth_service.py indentation so:
+
+class AuthService
+    hash_password
+    register_user
+    authenticate_user
+
+are all inside the class.
+
+After that run:
+
+python run.py
+
+The error will move to the next file (if any), but the current IndentationError in auth_service.py will be resolved.
+
+class AuthService:   # 0 spaces
+
+    @staticmethod    # 4 spaces ✅
+    def hash_password(): # 4 spaces ✅
+
+That means:
+
+run.py           ✅
+__init__.py      ✅
+config.py        ✅
+extensions.py    ✅
+auth_service.py  ✅ enough to load
+Blueprint        ✅
+
+The new error is:
+
+TypeError:
+The view function for 'auth.login'
+did not return a valid response
+
+That means your login() route is returning None.
+
+Most likely your auth_routes.py has:
+
+def login():
+    msg = ""
+
+    if request.method == "POST":
+        ...
+        if success:
+            ...
+            return redirect(url_for("auth.home"))
+
+        return render_template(
+            "index.html",
+            msg=msg
+        )
+
+Notice:
+
+GET Request
+↓
+if request.method == "POST" skipped
+↓
+No return
+↓
+None returned
+↓
+500 Error
+
+You need:
+
+def login():
+    msg = ""
+
+    if request.method == "POST":
+        ...
+
+        if success:
+            return redirect(url_for("auth.home"))
+
+    return render_template(
+        "index.html",
+        msg=msg
+    )
+
+The final return render_template(...) must be outside the POST block but inside the function.
+
+For Health Check add this in auth_routes.py:
+
+@auth_bp.route("/health")
+def health():
+    return {
+        "status": "UP",
+        "service": "login-system"
+    }, 200
+
+Test:
+
+http://127.0.0.1:5000/health
+
+Response:
+
+{
+  "status": "UP",
+  "service": "login-system"
+}
+
+Useful later for:
+
+Render Health Check
+Docker Health Check
+Kubernetes Health Check
+Monitoring
+
+Also bro, your auth_service.py still has a bug:
+
+Currently:
+
+class AuthService:
+
+    @staticmethod
+    def hash_password(...):
+        ...
+
+@staticmethod
+def register_user(...):
+
+register_user() and authenticate_user() are currently outside the class.
+
+They should be:
+
+class AuthService:
+
+    @staticmethod
+    def hash_password(...):
+        ...
+
+    @staticmethod
+    def register_user(...):
+        ...
+
+    @staticmethod
+    def authenticate_user(...):
+        ...
+
+Black formatter won't move them into the class automatically.
+
+Next command I'd run: ✅✅
+
+python -m py_compile app\routes\auth_routes.py
+python -m py_compile app\services\auth_service.py
+
+to catch any remaining indentation issues before running Flask again. 🚀    
+
+============================================================================================
+app\auth_service.py  Erros gone read above Fixing Steps Letr Carefully and revise also ✅✅
+============================================================================================
+
+Bro, your /health route looks fine.
+
+The reason you're getting:
+
+GET /health HTTP/1.1" 404
+
+is usually one of these:
+
+Check routes first
+
+Run:
+
+flask routes
+
+You should see something like:
+
+Endpoint       Methods    Rule
+auth.health    GET        /health
+auth.login     GET,POST   /
+auth.register  GET,POST   /register
+auth.home      GET        /home
+auth.profile   GET        /profile
+auth.logout    GET        /logout
+If /health is NOT listed
+
+Then Flask is loading an older version of auth_routes.py or the Blueprint isn't registered correctly.
+
+Check:
+
+# app/__init__.py
+
+from app.routes.auth_routes import auth_bp
+
+app.register_blueprint(auth_bp)
+
+must exist.
+
+Another bug in your login route
+
+You currently have:
+
+if success:
+    session["loggedin"] = True
+    session["id"] = account.id
+    session["username"] = account.username
+
+return redirect(url_for("auth.home"))
+
+Because of indentation, that return redirect(...) runs for every POST request.
+
+It should be:
+
+if success:
+    session["loggedin"] = True
+    session["id"] = account.id
+    session["username"] = account.username
+
+    return redirect(url_for("auth.home"))
+Most important next command
+
+Run: ✅✅
+
+flask routes
+
+and paste the output.
+
+That will immediately tell us whether Flask has actually registered:
+
+/health
+
+or not. If it's missing, the issue is Blueprint registration. If it's present, then Flask may be running an old process or loading a different file.
+
+venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> flask routes
+Endpoint       Methods    Rule                   
+-------------  ---------  -----------------------
+auth.home      GET        /home                  
+auth.login     GET, POST  /                      
+auth.logout    GET        /logout                
+auth.profile   GET        /profile               
+auth.register  GET, POST  /register              
+static         GET        /static/<path:filename>
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> 
+
+
+Found it bro ✅
+
+Your route list is:
+
+auth.home
+auth.login
+auth.logout
+auth.profile
+auth.register
+
+But:
+
+auth.health ❌ Missing
+
+That means Flask never loaded the health route.
+
+Since flask routes shows the actual registered routes, the problem is definitely in your auth_routes.py file.
+
+Most likely:
+
+You added /health
+But didn't save the file
+Or the decorator/function is inside another block accidentally
+Or there's a syntax/indentation issue causing Flask to skip that section
+Verify
+
+Run:
+
+Get-Content .\app\routes\auth_routes.py
+
+and check whether this exists at top level:
+
+@auth_bp.route("/health", methods=["GET"])
+def health():
+    return {
+        "status": "UP",
+        "service": "login-system"
+    }, 200
+
+It must be:
+
+column 0
+↓
+@auth_bp.route(...)
+def health():
+
+Not inside:
+
+def login():
+    ...
+
+    @auth_bp.route("/health")   # WRONG
+After saving
+
+Stop Flask:
+
+Ctrl + C
+
+Then run:
+
+flask routes
+
+again.
+
+You should see:
+
+auth.health    GET    /health
+
+Then:
+
+http://127.0.0.1:5001/health
+
+will work.
+
+One more thing bro 👀
+
+Your login() route still has a bug:
+
+Current:
+
+if success:
+    session["loggedin"] = True
+    session["id"] = account.id
+    session["username"] = account.username
+
+return redirect(url_for("auth.home"))
+
+Because of indentation, every POST redirects.
+
+Should be:
+
+if success:
+    session["loggedin"] = True
+    session["id"] = account.id
+    session["username"] = account.username
+
+    return redirect(url_for("auth.home"))
+
+and then at the end of the function:
+
+return render_template(
+    "index.html",
+    msg=msg
+)
+
+So right now:
+
+Health Route ❌ Not Registered
+Login Route ⚠️ Indentation Bug
+
+Fix those two and you're very close to having the app fully working. 🚀
+
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> flask routes
+Endpoint       Methods    Rule                   
+-------------  ---------  -----------------------
+auth.health    GET        /health                
+auth.home      GET        /home                  
+auth.login     GET, POST  /                      
+auth.logout    GET        /logout                
+auth.profile   GET        /profile               
+auth.register  GET, POST  /register              
+static         GET        /static/<path:filename>
+(venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> 
+
+Nice bro 🚀  ✅✅
+
+Now:
+
+auth.health    ✅
+auth.home      ✅
+auth.login     ✅
+auth.logout    ✅
+auth.profile   ✅
+auth.register  ✅
+
+All routes are registered. ✅✅
+
+Test Health
+
+Open: ✅✅
+
+http://127.0.0.1:5001/health
+
+Expected:
+
+{
+  "service": "login-system",
+  "status": "UP"
+}
+Test Login Page
+
+Open:
+
+http://127.0.0.1:5001/
+
+If you get:
+
+Login Page
+
+then:
+
+Templates ✅
+Blueprints ✅
+Routes ✅
+Next Check Database
+
+Run:
+
+flask db init
+
+If migrations folder already exists:
+
+flask db migrate -m "Initial accounts table"
+
+Then:
+
+flask db upgrade
+Verify DB Created
+
+Check project folder:
+
+pythonlogin.db
+
+or
+
+dir *.db
+Test Register
+
+Open:
+
+http://127.0.0.1:5001/register
+
+Create:
+
+username: admin
+email: admin@gmail.com
+password: admin123
+Test Login
+
+Open:
+
+http://127.0.0.1:5001/
+
+Login using:
+
+admin
+admin123
+
+Expected flow:
+
+Register
+    ↓
+SQLite Insert
+    ↓
+Login
+    ↓
+Session Created
+    ↓
+Home Page
+    ↓
+Profile Page
+Before Testing Login
+
+Fix this indentation in login():
+
+Current:
+
+if success:
+    session["loggedin"] = True
+    session["id"] = account.id
+    session["username"] = account.username
+
+return redirect(url_for("auth.home"))
+
+Correct:
+
+if success:
+    session["loggedin"] = True
+    session["id"] = account.id
+    session["username"] = account.username
+
+    return redirect(url_for("auth.home"))
+
+return render_template(
+    "index.html",
+    msg=msg
+)
+
+That is the last major bug I can see from the code you've pasted. After that, test Register → Login flow. 🚀
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

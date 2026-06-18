@@ -1,0 +1,85 @@
+Bro, easiest way 👇
+
+Method 1 (Recommended)
+
+Press:
+
+Ctrl + Shift + P
+
+Type:
+
+Preferences: Open User Settings (JSON)
+
+Open it.
+
+If you see:
+
+{
+}
+
+replace with:
+
+{
+    "editor.formatOnSave": true,
+
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
+}
+
+Save:
+
+Ctrl + S
+
+Done ✅
+
+Method 2 (UI Settings)
+
+Press:
+
+Ctrl + ,
+
+Search:
+
+format on save
+
+Enable:
+
+Editor: Format On Save ✅
+
+Then search:
+
+default formatter
+
+Click:
+
+Python
+↓
+Black Formatter
+
+Done ✅
+
+Verify
+
+Open any .py file.
+
+Mess it up:
+
+def test():
+ print("hello")
+
+Press:
+
+Ctrl + S
+
+It should become:
+
+def test():
+    print("hello")
+
+If that happens:
+
+Format On Save ✅
+Black Formatter ✅
+
+both are working correctly. 🚀

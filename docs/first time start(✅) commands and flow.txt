@@ -1,0 +1,416 @@
+With the new setup, first-time usage is:
+
+1. Create .env
+SECRET_KEY=my_secret_key
+
+DATABASE_URL=sqlite:///pythonlogin.db
+
+2. Install packages
+pip install -r requirements.txt
+
+3. Initialize migrations (one time only)
+flask db init # This will crte the "migrations" folder in root of the project okay
+
+Creates:
+
+migrations/
+4. Generate first migration
+flask db migrate -m "Initial accounts table" # This will create the empty databse file but not with table please
+
+5. Create database and tables
+flask db upgrade # This will now apply that target databse changes synced as exinsg tables an dall like that assuemd tabels and all like okay means its there we can assuemd properly now.
+
+This creates:
+
+pythonlogin.db
+accounts table
+
+6. Run application
+
+If using Factory Pattern:
+
+python run.py 
+or 
+# set FLASK_APP=run.py # If not set set now
+flask run
+
+# To check:
+echo $env:FLASK_APP
+
+# For set in PowerShell:
+$env:FLASK_APP="run.py"
+
+# Meaning:
+Create Environment Variable
+Name  = FLASK_APP
+Value = run.py
+
+# Check:
+echo $env:FLASK_APP
+
+
+# If you mean remove the FLASK_APP variable from the current PowerShell session:
+Remove-Item Env:FLASK_APP
+
+# Check:
+echo $env:FLASK_APP
+
+# Or set it to empty:
+$env:FLASK_APP=""
+
+# Useful commands:
+$env:FLASK_APP="run.py"      # Set
+
+echo $env:FLASK_APP          # View
+
+Remove-Item Env:FLASK_APP    # Remove
+
+After removing it, running:
+
+flask run
+
+may fail unless Flask can automatically discover your app. For your project, you can always use:
+
+python run.py
+
+which doesn't require FLASK_APP to be set. ✅
+
+7. Register first user
+
+Open:
+
+http://127.0.0.1:5000/register
+
+Enter:
+
+username
+email
+password
+
+Click Register.
+
+Data gets inserted into:
+
+accounts
+
+table inside:
+
+pythonlogin.db
+8. Login
+
+Open:
+
+http://127.0.0.1:5000/
+
+Enter:
+
+username
+password
+
+Login succeeds.
+
+Flow
+Account Model
+      ↓
+flask db migrate
+      ↓
+flask db upgrade
+      ↓
+SQLite DB Created
+      ↓
+Register User
+      ↓
+Account Stored
+      ↓
+Login
+      ↓
+Session Created
+      ↓
+Home Page
+Later on Render
+
+Change only:
+
+DATABASE_URL=postgresql://...
+
+Then run:
+
+flask db upgrade
+
+against Supabase PostgreSQL.
+
+Your existing Register/Login pages continue to work without code changes.
+
+
+
+🤣🤣🤣 Brooo yes!!  ✅✅
+
+This is actually a good milestone because now:
+
+Factory Pattern        ✅
+Flask App Factory      ✅
+Blueprints             ✅
+SQLAlchemy             ✅
+Flask-Migrate Setup    ✅
+.env Loading           ✅
+Health Endpoint        ✅
+VS Code Auto Format    ✅
+Flask Running          ✅
+HTTP 200 Response      ✅
+
+And the important part:
+
+GET /health HTTP/1.1" 200
+
+means:
+
+Request
+   ↓
+Blueprint
+   ↓
+Route
+   ↓
+Flask
+   ↓
+Response
+   ↓
+200 OK
+
+Exactly the same flow you'll later use in:
+
+Auth Service
+Product Service
+Cart Service
+Order Service
+
+🤣 The best feeling is when you go from:
+
+IndentationError
+SyntaxError
+return outside function
+404 Not Found
+
+for 1 hour...
+
+to finally:
+
+127.0.0.1 - - [18/Jun/2026 13:35:54] "GET /health HTTP/1.1" 200 -
+
+and suddenly:
+
+Everything is alive 😎
+
+Now next things I'd test:
+
+/                  Login Page
+/register          Register Page
+/home              Session Protected
+/profile           Session Protected
+/logout            Logout
+
+Then:
+
+flask db init
+flask db migrate -m "Initial accounts table"
+flask db upgrade
+
+and verify:
+
+Register
+   ↓
+SQLite Insert
+   ↓
+Login
+   ↓
+Session
+   ↓
+Home
+
+Bro earned this one 🤣🚀
+
+HTTP 200 OK
+=
+Small victory
+=
+Big dopamine
+
+Love the energy 😆👍.
+
+=================================
+
+Bro, this is a very important Flask concept 👍
+
+Why do we set FLASK_APP?
+
+When you run:
+
+flask run
+
+Flask asks:
+
+Which file contains my application?
+
+It doesn't know automatically.
+
+So we tell Flask:
+
+$env:FLASK_APP="run.py"
+
+Meaning:
+
+Hey Flask 👋
+
+My application starts from:
+
+run.py
+
+Then Flask internally does something like:
+
+from run import app
+
+or for Factory Pattern:
+
+from run import app
+
+and starts the server.
+
+Without FLASK_APP
+
+If you do:
+
+flask run
+
+Flask may say:
+
+Error: Could not locate a Flask application
+
+because it doesn't know where your app is.
+
+Why does python run.py work without FLASK_APP?
+
+Because:
+
+python run.py
+
+directly executes:
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run()
+
+Python already knows which file to run.
+
+No discovery needed.
+
+Why use flask run then?
+
+Because Flask gives extra development features:
+
+flask run --debug
+
+Benefits:
+
+Auto Reload
+Debugger
+Environment Variable Support
+Flask Commands
+Flask-Migrate Commands
+Dynamic Host
+
+Example:
+
+flask run --host=0.0.0.0
+
+Meaning:
+
+Listen on all network interfaces
+
+So:
+
+127.0.0.1
+192.168.x.x
+localhost
+
+all can access.
+
+Dynamic Port
+
+Example:
+
+flask run --port=5001
+
+Meaning:
+
+Use port 5001
+instead of
+5000
+
+URLs become:
+
+http://127.0.0.1:5001
+
+instead of:
+
+http://127.0.0.1:5000
+Combined
+flask run --host=0.0.0.0 --port=5001 --debug
+
+Means:
+
+Host      = 0.0.0.0
+Port      = 5001
+Debug     = True
+AutoReload= True
+Production (Render)
+
+You normally DON'T do:
+
+flask run
+
+Instead:
+
+gunicorn run:app
+
+because:
+
+flask run  -> Development Server
+gunicorn   -> Production Server
+Your current setup
+$env:FLASK_APP="run.py"
+
+tells Flask:
+
+Application Entry Point
+↓
+run.py
+↓
+create_app()
+↓
+Blueprints
+↓
+Routes
+
+Then:
+
+flask run --host=0.0.0.0 --port=5001 --debug
+
+starts your Factory Pattern application with:
+
+Host   = 0.0.0.0
+Port   = 5001
+Debug  = ON
+
+and that's why your:
+
+http://127.0.0.1:5001/health
+
+returned:
+
+{
+  "service": "login-system",
+  "status": "UP"
+}
+
+with HTTP 200 OK 🚀.
+
