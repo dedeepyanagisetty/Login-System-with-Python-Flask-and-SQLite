@@ -8,6 +8,7 @@ from flask import (
     current_app,
 )
 
+from app.models import account
 from app.models.account import Account
 from app.services.auth_service import AuthService
 
@@ -41,9 +42,11 @@ def login():
             session["id"] = account.id
             session["username"] = account.username
 
-        return redirect(url_for("auth.home"))
+            return redirect(url_for("auth.home"))
 
-        return render_template("index.html", msg=msg)
+    return render_template(
+        "index.html", msg=msg
+    )  # Must be outside the POST block. Otherwise, if the request method is GET, msg will be undefined when rendering the template, leading to an error. By placing it outside, we ensure that msg is always defined, even if it's just an empty string, allowing the template to render without issues regardless of the request method.
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])

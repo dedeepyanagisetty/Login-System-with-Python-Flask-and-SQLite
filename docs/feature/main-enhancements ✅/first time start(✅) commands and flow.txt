@@ -1,0 +1,771 @@
+With the new setup, first-time usage is:
+
+1. Create .env
+SECRET_KEY=my_secret_key
+
+DATABASE_URL=sqlite:///pythonlogin.db
+
+2. Install packages
+pip install -r requirements.txt
+
+3. Initialize migrations (one time only)
+flask db init # This will crte the "migrations" folder in root of the project okay
+
+Creates:
+
+migrations/
+4. Generate first migration
+flask db migrate -m "Initial accounts table" # This will create the empty databse file but not with table please
+
+5. Create database and tables
+flask db upgrade # This will now apply that target databse changes synced as exinsg tables an dall like that assuemd tabels and all like okay means its there we can assuemd properly now.
+
+This creates:
+
+pythonlogin.db
+accounts table
+
+6. Run application
+
+If using Factory Pattern:
+
+python run.py 
+or 
+# set FLASK_APP=run.py # If not set set now
+flask run
+
+# To check:
+echo $env:FLASK_APP
+
+# For set in PowerShell:
+$env:FLASK_APP="run.py"
+
+# Meaning:
+Create Environment Variable
+Name  = FLASK_APP
+Value = run.py
+
+# Check:
+echo $env:FLASK_APP
+
+
+# If you mean remove the FLASK_APP variable from the current PowerShell session:
+Remove-Item Env:FLASK_APP
+
+# Check:
+echo $env:FLASK_APP
+
+# Or set it to empty:
+$env:FLASK_APP=""
+
+# Useful commands:
+$env:FLASK_APP="run.py"      # Set
+
+echo $env:FLASK_APP          # View
+
+Remove-Item Env:FLASK_APP    # Remove
+
+After removing it, running:
+
+flask run
+
+may fail unless Flask can automatically discover your app. For your project, you can always use:
+
+python run.py
+
+which doesn't require FLASK_APP to be set. ✅
+
+7. Register first user
+
+Open:
+
+http://127.0.0.1:5000/register
+
+Enter:
+
+username
+email
+password
+
+Click Register.
+
+Data gets inserted into:
+
+accounts
+
+table inside:
+
+pythonlogin.db
+8. Login
+
+Open:
+
+http://127.0.0.1:5000/
+
+Enter:
+
+username
+password
+
+Login succeeds.
+
+Flow
+Account Model
+      ↓
+flask db migrate
+      ↓
+flask db upgrade
+      ↓
+SQLite DB Created
+      ↓
+Register User
+      ↓
+Account Stored
+      ↓
+Login
+      ↓
+Session Created
+      ↓
+Home Page
+Later on Render
+
+Change only:
+
+DATABASE_URL=postgresql://...
+
+Then run:
+
+flask db upgrade
+
+against Supabase PostgreSQL.
+
+Your existing Register/Login pages continue to work without code changes.
+
+
+
+🤣🤣🤣 Brooo yes!!  ✅✅
+
+This is actually a good milestone because now:
+
+Factory Pattern        ✅
+Flask App Factory      ✅
+Blueprints             ✅
+SQLAlchemy             ✅
+Flask-Migrate Setup    ✅
+.env Loading           ✅
+Health Endpoint        ✅
+VS Code Auto Format    ✅
+Flask Running          ✅
+HTTP 200 Response      ✅
+
+And the important part:
+
+GET /health HTTP/1.1" 200
+
+means:
+
+Request
+   ↓
+Blueprint
+   ↓
+Route
+   ↓
+Flask
+   ↓
+Response
+   ↓
+200 OK
+
+Exactly the same flow you'll later use in:
+
+Auth Service
+Product Service
+Cart Service
+Order Service
+
+🤣 The best feeling is when you go from:
+
+IndentationError
+SyntaxError
+return outside function
+404 Not Found
+
+for 1 hour...
+
+to finally:
+
+127.0.0.1 - - [18/Jun/2026 13:35:54] "GET /health HTTP/1.1" 200 -
+
+and suddenly:
+
+Everything is alive 😎
+
+Now next things I'd test:
+
+/                  Login Page
+/register          Register Page
+/home              Session Protected
+/profile           Session Protected
+/logout            Logout
+
+Then:
+
+flask db init
+flask db migrate -m "Initial accounts table"
+flask db upgrade
+
+and verify:
+
+Register
+   ↓
+SQLite Insert
+   ↓
+Login
+   ↓
+Session
+   ↓
+Home
+
+Bro earned this one 🤣🚀
+
+HTTP 200 OK
+=
+Small victory
+=
+Big dopamine
+
+Love the energy 😆👍.
+
+=================================
+
+Bro, this is a very important Flask concept 👍
+
+Why do we set FLASK_APP?
+
+When you run:
+
+flask run
+
+Flask asks:
+
+Which file contains my application?
+
+It doesn't know automatically.
+
+So we tell Flask:
+
+$env:FLASK_APP="run.py"
+
+Meaning:
+
+Hey Flask 👋
+
+My application starts from:
+
+run.py
+
+Then Flask internally does something like:
+
+from run import app
+
+or for Factory Pattern:
+
+from run import app
+
+and starts the server.
+
+Without FLASK_APP
+
+If you do:
+
+flask run
+
+Flask may say:
+
+Error: Could not locate a Flask application
+
+because it doesn't know where your app is.
+
+Why does python run.py work without FLASK_APP?
+
+Because:
+
+python run.py
+
+directly executes:
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run()
+
+Python already knows which file to run.
+
+No discovery needed.
+
+Why use flask run then?
+
+Because Flask gives extra development features:
+
+flask run --debug
+
+Benefits:
+
+Auto Reload
+Debugger
+Environment Variable Support
+Flask Commands
+Flask-Migrate Commands
+Dynamic Host
+
+Example:
+
+flask run --host=0.0.0.0
+
+Meaning:
+
+Listen on all network interfaces
+
+So:
+
+127.0.0.1
+192.168.x.x
+localhost
+
+all can access.
+
+Dynamic Port
+
+Example:
+
+flask run --port=5001
+
+Meaning:
+
+Use port 5001
+instead of
+5000
+
+URLs become:
+
+http://127.0.0.1:5001
+
+instead of:
+
+http://127.0.0.1:5000
+Combined
+flask run --host=0.0.0.0 --port=5001 --debug
+
+Means:
+
+Host      = 0.0.0.0
+Port      = 5001
+Debug     = True
+AutoReload= True
+Production (Render)
+
+You normally DON'T do:
+
+flask run
+
+Instead:
+
+gunicorn run:app
+
+because:
+
+flask run  -> Development Server
+gunicorn   -> Production Server
+Your current setup
+$env:FLASK_APP="run.py"
+
+tells Flask:
+
+Application Entry Point
+↓
+run.py
+↓
+create_app()
+↓
+Blueprints
+↓
+Routes
+
+Then:
+
+flask run --host=0.0.0.0 --port=5001 --debug
+
+starts your Factory Pattern application with:
+
+Host   = 0.0.0.0
+Port   = 5001
+Debug  = ON
+
+and that's why your:
+
+http://127.0.0.1:5001/health
+
+returned:
+
+{
+  "service": "login-system",
+  "status": "UP"
+}
+
+with HTTP 200 OK 🚀.
+
+
+venv) PS E:\New Experiments\Login-System-with-Python-Flask-and-SQLite> flask run --host=0.0.0.0 --port=5001 --debug
+ * Serving Flask app 'run.py'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.0.112:5001
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 694-304-847
+127.0.0.1 - - [18/Jun/2026 14:36:33] "GET / HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\app\routes\auth_routes.py", line 47, in login
+    return render_template(
+           ^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\templates\index.html", line 13, in top-level template code
+    <a href="{{ url_for('login') }}" class="active">Login</a>
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\New Experiments\Login-System-with-Python-Flask-and-SQLite\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'login'. Did you mean 'auth.login' instead?
+127.0.0.1 - - [18/Jun/2026 14:36:33] "GET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 304 -
+127.0.0.1 - - [18/Jun/2026 14:36:33] "GET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 304 -
+127.0.0.1 - - [18/Jun/2026 14:36:33] "GET /?__debugger__=yes&cmd=resource&f=console.png&s=VBqVybYrufvpYjabPy2g HTTP/1.1" 200 -
+
+✅✅
+
+Bro 😄 this is actually another good sign.
+
+Previous error:
+
+TemplateNotFound: index.html
+
+Now:
+
+BuildError:
+Could not build url for endpoint 'login'
+Did you mean 'auth.login' instead?
+
+Meaning:
+
+Templates Found           ✅
+index.html Loaded         ✅
+Blueprint Loaded          ✅
+Route Loaded              ✅
+
+Only the template still has old route names.
+
+In your HTML files, change:
+
+{{ url_for('login') }}
+
+to:
+
+{{ url_for('auth.login') }}
+
+and
+
+{{ url_for('register') }}
+
+to:
+
+{{ url_for('auth.register') }}
+
+and similarly:
+
+{{ url_for('home') }}
+
+to:
+
+{{ url_for('auth.home') }}
+{{ url_for('profile') }}
+
+to:
+
+{{ url_for('auth.profile') }}
+{{ url_for('logout') }}
+
+to:
+
+{{ url_for('auth.logout') }}
+
+Because after introducing:
+
+auth_bp = Blueprint("auth", __name__)
+
+Flask automatically prefixes endpoints:
+
+login      → auth.login
+register   → auth.register
+home       → auth.home
+profile    → auth.profile
+logout     → auth.logout
+Quick Search
+
+Run:
+
+Select-String -Path .\templates\*.html -Pattern "url_for"
+
+and update all old references.
+
+Most likely files needing changes:
+
+templates/index.html
+templates/register.html
+templates/layout.html
+
+After saving:
+
+Ctrl + C
+flask run --host=0.0.0.0 --port=5001 --debug
+
+You're very close now.
+
+Progress:
+
+Factory Pattern        ✅
+Blueprints             ✅
+Templates Found        ✅
+Health Endpoint        ✅
+Routes Registered      ✅
+SQLite Config          ✅
+Template URLs          ❌ (current issue)
+
+Fix the url_for(...) calls and the login page should finally render. 🚀
+
+
+✅✅
+
+Bro 😄 now Flask is running successfully.
+
+Serving Flask app 'run.py'     ✅
+Debug mode: on                 ✅
+127.0.0.1:5001                ✅
+No traceback                  ✅
+
+Now test in this order:
+
+1. http://127.0.0.1:5001/health
+2. http://127.0.0.1:5001/
+3. http://127.0.0.1:5001/register
+If Login Page Opens
+Login Page
+Username
+Password
+Login Button
+
+Then:
+
+Templates        ✅
+Blueprints       ✅
+url_for fixes    ✅
+Next Test Register
+
+Open:
+
+http://127.0.0.1:5001/register
+
+Try:
+
+Username : admin
+Email    : admin@gmail.com
+Password : admin123
+
+Click Register.
+
+Watch terminal.
+
+If successful:
+
+POST /register HTTP/1.1 200
+
+or redirect.
+
+Verify Database
+
+Run another PowerShell:
+
+dir *.db
+
+You should see:
+
+pythonlogin.db
+Then Login
+
+Open:
+
+http://127.0.0.1:5001/
+
+Login with:
+
+admin
+admin123
+
+Expected:
+
+Login
+↓
+Session Created
+↓
+Redirect
+↓
+Home Page
+If Any Error Appears
+
+Paste the latest traceback.
+
+Current status:
+
+Factory Pattern      ✅
+Blueprints           ✅
+Templates            ✅
+Health Endpoint      ✅
+Migrations           ✅
+SQLite               ✅
+Register Test        ⏳
+Login Test           ⏳
+Profile Test         ⏳
+Logout Test          ⏳
+
+You are now at the actual functional testing stage 🚀. 
+
+
+✅✅✅
+Final Flow:-
+
+Now test in this exact order:
+
+Step 1 - Register
+
+Open:
+
+http://127.0.0.1:5001/register
+
+Enter:
+
+Username : admin
+Password : admin123
+Email    : admin@gmail.com
+
+Click:
+
+Register
+
+Watch terminal.
+
+Expected:
+
+POST /register HTTP/1.1
+Step 2 - Verify SQLite
+
+New terminal:
+
+dir *.db
+
+If no DB visible:
+
+dir -Recurse *.db
+Step 3 - Login
+
+Open:
+
+http://127.0.0.1:5001/
+
+Enter:
+
+admin
+admin123
+
+Click Login.
+
+Expected:
+
+Redirect
+↓
+/home
+Step 4 - Home
+
+Expected page:
+
+Home Page
+Welcome back, admin!
+Step 5 - Profile
+
+Open:
+
+http://127.0.0.1:5001/profile
+
+Expected:
+
+Username : admin
+Email    : admin@gmail.com
+Step 6 - Logout
+
+Click:
+
+Logout
+
+Expected:
+
+Redirect
+↓
+Login Page
+
+Current status:
+
+Health Endpoint     ✅
+Login Page          ✅
+CSS                 ✅
+Templates           ✅
+Register Flow       ⏳
+Login Flow          ⏳
+Home Page           ⏳
+Profile Page        ⏳
+Logout Flow         ⏳
+
+Now you're finally testing the actual authentication flow instead of fixing Flask errors 🤣🚀.
+
+
+
