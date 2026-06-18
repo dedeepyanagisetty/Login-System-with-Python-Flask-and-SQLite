@@ -4,7 +4,7 @@ import re, hashlib
 
 app = Flask(__name__)
 
-# Secret key for session management (can be any random string)
+# Secret key for session management (can be any random string) 
 app.secret_key = 'your secret key'
 
 # SQLite Database Configuration
